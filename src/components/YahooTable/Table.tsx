@@ -37,14 +37,14 @@ const columns = [
         field: 'close',
         headerName: 'Close',
         type: 'number',
-        width: 110,
+        width: 200,
         editable: false,
     },
     {
         field: 'volume',
-        headerName: 'Colume',
+        headerName: 'Volume',
         type: 'number',
-        width: 110,
+        width: 200,
         editable: false,
     },
 ];
@@ -63,10 +63,22 @@ export function Table({ticker, startDate, endDate}: TableProps) {
     }, [ticker, startDate, endDate, getPrices])
 
     
+    console.log(`Data: ${data}`)
+
+    const rows = data.map((row, id )=> { return {...row, id, date: new Date(row.date) }})
+
 
     if(loading) return <div></div>;
     else if(error) return <div>{error}</div>;
     else {
-        return <div>{data}</div>
+        return <div style={{ height: "80vh", width: '100%' }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          autoPageSize={true}
+          checkboxSelection
+          disableSelectionOnClick
+        />
+      </div>
     }
 }
