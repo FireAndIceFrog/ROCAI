@@ -1,11 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface yahooSliceState {
-    data: any[]
+    data: any[];
+    loading: boolean;
+    error: any;
 }
 
 const initialState: yahooSliceState = {
-    data: []
+    data: [],
+    loading: false,
+    error: undefined
 }
 
 const yahooSlice = createSlice({
@@ -14,6 +18,18 @@ const yahooSlice = createSlice({
     reducers: {
         setData: (state, action: PayloadAction<any[]>)=> {
             state.data = action.payload
+            state.error = undefined
+            state.loading = false
+        },
+        setError: (state, action: PayloadAction<any>)=>{
+            state.error = action.payload
+            state.data = []
+            state.loading = false
+        },
+        startLoading: (state)=> {
+            state.data = [];
+            state.error = undefined
+            state.loading = true
         }
     }
   })
