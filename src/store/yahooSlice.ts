@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { PriceData } from "../interfaces/yahoo";
 
-interface yahooSliceState {
+export interface yahooSliceState {
     data: any[];
     loading: boolean;
     error: any;
@@ -16,7 +17,7 @@ const yahooSlice = createSlice({
     name: 'yahooSlice',
     initialState,
     reducers: {
-        setData: (state, action: PayloadAction<any[]>)=> {
+        setData: (state, action: PayloadAction<PriceData[]>)=> {
             state.data = action.payload
             state.error = undefined
             state.loading = false
