@@ -10,6 +10,7 @@ export interface PriceData {
 
 export interface yahooResponse {
     error: boolean,
+    message?: string
     currency: string,
     data: PriceData[]
 }
