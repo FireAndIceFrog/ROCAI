@@ -5,14 +5,15 @@ const  express = require('express');
 const app = express()
 const port = 8080
 
-app.get('/getPrices', async (req, res) => {
-
+app.post('/getPrices', async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
   const query = req.query;
-  const startDate = query["startDate"];
-  const endDate = query["startDate"];
+  const startDate = new Date(parseFloat(query["startDate"]));
+  const endDate = new Date(parseFloat(query["endDate"]));
   const ticker = query["ticker"];
 
   if(!startDate && !endDate && !ticker) {
+    
     res.sendStatus(500)
     return
   }

@@ -12,5 +12,5 @@ export interface yahooResponse {
     error: boolean,
     message?: string
     currency: string,
-    data: PriceData[]
+    response: PriceData[]
 }
