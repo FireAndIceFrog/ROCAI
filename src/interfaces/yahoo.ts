@@ -1,5 +1,5 @@
 export interface PriceData {
-    date: number,
+    date: number | Date,
     open: number,
     high: number,
     low: number,
@@ -14,3 +14,4 @@ export interface yahooResponse {
     currency: string,
     response: PriceData[]
 }
+type ChartSelectionType = keyof PriceData

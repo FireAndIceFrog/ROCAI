@@ -1,16 +1,21 @@
 
+import { Paper } from '@material-ui/core';
 import { DataGrid } from '@mui/x-data-grid';
-import { useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useYahooFinance } from '../../hooks/yahoo';
 import { AplicationState } from '../../store/store';
 import { yahooSliceState } from '../../store/yahooSlice';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Grid } from '@mui/material';
+import { StockContext } from '.';
+import { PriceData } from '../../interfaces/yahoo';
 
-const columns = [
+export const columns = [
     {
         field: 'date',
         headerName: 'Date',
-        width: 150,
+        width: 300,
         editable: false,
     },
     {
@@ -50,26 +55,40 @@ const columns = [
 ];
 
 interface TableProps {
-    ticker: string, 
-    startDate: Date, 
-    endDate: Date
+    dataParser?: ((rows: PriceData[])=>(PriceData & { id: string })[]) | undefined
 }
 
-export function Table({ticker, startDate, endDate}: TableProps) {
-    const { getPrices } = useYahooFinance()
-    const { data, loading, error } = useSelector<AplicationState, yahooSliceState>(state=>state.yahooSlice)
+export function Table({ dataParser }: TableProps) {
+    const { getPrices } = useYahooFinance();
+    const { data, loading, error } = useSelector<AplicationState, yahooSliceState>(state=>state.yahooSlice);
+    
+    const { startDate, endDate, ticker} = useContext(StockContext);
     useEffect(()=> {
         getPrices(ticker, startDate, endDate)
     }, [ticker, startDate, endDate, getPrices])
 
+
     
     console.log(`Data: ${data}`)
 
-    const rows = data.map((row, id )=> { return {...row, id, date: new Date(row.date) }})
+    let rows = data;
+    if(!dataParser) {
+        rows = rows.map((row, id )=> { return {...row, id, date: new Date(parseInt(row.date)*1000) }})
+        rows = rows.filter(row=> row.close !== null && row.close !== undefined )
+    } else {
+        rows = dataParser(rows)
+    }
+    
 
 
-    if(loading) return <div></div>;
-    else if(error) return <div>{error}</div>;
+    if(loading) return (
+        <Grid container>
+            <Grid item xs ={12}>
+                <CircularProgress />
+            </Grid>
+        </Grid>
+        );
+    else if(error) return <Paper>{error}</Paper>;
     else {
         return <div style={{ height: "80vh", width: '100%' }}>
         <DataGrid
